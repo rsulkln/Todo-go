@@ -7,12 +7,16 @@ import (
 	"os"
 )
 
+var StorageUser []User
+
 func main() {
 	command := flag.String("command", "no command input", "plaese enter youre command")
 	flag.Parse()
 	runCommand(*command)
 	fmt.Println("StorageUser:", StorageUser)
+
 	for {
+
 		runCommand(*command)
 
 		scanner := bufio.NewScanner(os.Stdin)
@@ -29,10 +33,10 @@ type User struct {
 	Password string
 }
 
-var StorageUser []User
-
 func runCommand(command string) {
 	switch {
+	case command == "":
+		fmt.Println("Please Enter youre command :")
 	case command == "create-task":
 		createTask()
 	case command == "create-category":
@@ -96,6 +100,10 @@ func createUser() {
 	id = password
 	fmt.Println("youre user is:", name, password, "and youre ID is:", id)
 
+	fmt.Println("please Enter youre password: ")
+	scanner.Scan()
+	password = scanner.Text()
+
 	user := User{
 		ID:       len(StorageUser) + 1,
 		Name:     name,
@@ -103,17 +111,37 @@ func createUser() {
 	}
 	StorageUser = append(StorageUser, user)
 }
+
 func login() {
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Println("please Enter youre info for login: ")
-	var ID, name, password string
-	fmt.Print("Enter user ID: ")
-	scanner.Scan()
-	ID = scanner.Text()
+	var ID, email, password string
+
 	fmt.Print("Enter user email: ")
 	scanner.Scan()
-	name = scanner.Text()
+	email = scanner.Text()
+
+	fmt.Println("please Enter youre password:")
+	scanner.Scan()
+	password = scanner.Text()
+
+	notFound := true
+	for _, user := range StorageUser {
+		if user.Email == email {
+			if user.Password == password {
+				notFound = true
+				fmt.Println("youre are login :")
+			} else {
+				fmt.Println("the pass or email in incorrect")
+			}
+		}
+	}
+	if notFound {
+		fmt.Println("the email or password is not corrent ")
+		return
+	}
+
 	fmt.Print("Enter user password: ")
 	scanner.Scan()
-	fmt.Println("welcome", ID, name, "youre password is:", password)
+	fmt.Println("welcome", ID, email, "youre password is:", password)
 }
