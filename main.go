@@ -312,6 +312,4 @@ func loadUserStorageFromFile() {
 
 		fmt.Printf("user: %+v\n", user)
 	}
-
-	//fmt.Println(data)
 }
